@@ -5,16 +5,15 @@ import java.io.InputStreamReader;
 public class StaplesApplication {
     public static void main(String[] args) throws IOException {
         //Возможность наличия мусора не обговорена поэтому не учитываем
+        String staples = readStaples();
+        String correctStaples = findCorrectStaples(staples);
+        printStaplesResult(correctStaples);
+    }
+
+    private static String readStaples() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Enter Staples: ");
-        String staples = br.readLine();
-        String correctStaples = findCorrectStaples(staples);
-        Integer staplesLength = correctStaples.length();
-        StringBuilder result = new StringBuilder(staplesLength.toString());
-        if (staplesLength != 0) {
-            result.append(" - " + correctStaples);
-        }
-        System.out.println(result);
+        return br.readLine();
     }
 
     private static String findCorrectStaples(String staples) {
@@ -62,5 +61,14 @@ public class StaplesApplication {
             return true;
         }
         return false;
+    }
+
+    private static void printStaplesResult(String staples) {
+        Integer staplesLength = staples.length();
+        StringBuilder result = new StringBuilder(staplesLength.toString());
+        if (staplesLength != 0) {
+            result.append(" - " + staples);
+        }
+        System.out.println(result);
     }
 }
