@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 
 public class StaplesApplication {
     public static void main(String[] args) throws IOException {
@@ -18,49 +21,30 @@ public class StaplesApplication {
 
     private static String findCorrectStaples(String staples) {
         int staplesLength = staples.length();
-        StringBuilder correctStaples = new StringBuilder();
+        Stack<Integer> openedStaples = new Stack<>();
+        SortedSet<Integer> correctStaplesNumbers = new TreeSet();
         for (int i = 0; i < staplesLength; i++) {
-            boolean findedFirstOpenStaple = false;
-            int stapleOpenCount = 0;
-            int stapleCloseCount = 0;
-            int firstStaple = 0;
-            for (int j = i; j < staplesLength; j++) {
-                if (isStapleOpen(staples.charAt(j))) {
-                    if (!findedFirstOpenStaple) {
-                        findedFirstOpenStaple = true;
-                        firstStaple = j;
-                    }
-                    stapleOpenCount++;
-
-                } else if (!findedFirstOpenStaple) {
-                    continue;
-                }
-                if (isStapleClose(staples.charAt(j))) {
-                    stapleCloseCount++;
-                }
-                if (stapleOpenCount > 0 && stapleCloseCount > 0 && stapleOpenCount == stapleCloseCount) {
-                    correctStaples.append(staples.substring(firstStaple, j + 1));
-                    i = j + 1;
-                    findedFirstOpenStaple = false;
-                    continue;
-                }
+            if (isStapleOpen(staples.charAt(i))) {
+                openedStaples.push(i);
+            }
+            if (!openedStaples.empty() && isStapleClose(staples.charAt(i))) {
+                correctStaplesNumbers.add(openedStaples.pop());
+                correctStaplesNumbers.add(i);
             }
         }
-        return correctStaples.toString();
+        StringBuilder result = new StringBuilder();
+        for (int correctStapleNumber : correctStaplesNumbers) {
+            result.append(staples.charAt(correctStapleNumber));
+        }
+        return result.toString();
     }
 
     private static boolean isStapleOpen(char staple) {
-        if (staple == '(') {
-            return true;
-        }
-        return false;
+        return staple == '(';
     }
 
     private static boolean isStapleClose(char staple) {
-        if (staple == ')') {
-            return true;
-        }
-        return false;
+        return staple == ')';
     }
 
     private static void printStaplesResult(String staples) {
